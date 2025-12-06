@@ -10,7 +10,7 @@
 
 ## System Design:
 
-<img src="https://i.imgur.com/xDVPUaT.png" width="800">
+<img src="https://i.imgur.com/GkWtTIB.png" width="800">
 
 ## 🚀 Stack Tecnológica
 
