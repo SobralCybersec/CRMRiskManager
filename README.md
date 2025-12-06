@@ -8,7 +8,7 @@
 
 <img src="https://i.imgur.com/qIy6qsK.png" width="800">
 
-### System Design:
+## System Design:
 
 <img src="https://i.imgur.com/xDVPUaT.png" width="800">
 
