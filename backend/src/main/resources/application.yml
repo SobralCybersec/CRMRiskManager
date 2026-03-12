@@ -11,11 +11,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
+        format_sql: false
         default_schema: public
   
   data:
@@ -31,11 +31,23 @@ spring:
 
 server:
   port: 8080
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: when-authorized
 
 jwt:
-  secret: mySecretKey123456789012345678901234567890
+  secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}
   expiration: 86400000
 
 ai:
   service:
-    url: http://localhost:8001
+    url: ${AI_SERVICE_URL:http://localhost:8001}

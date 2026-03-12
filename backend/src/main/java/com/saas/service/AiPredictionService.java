@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -26,20 +26,20 @@ public class AiPredictionService {
     public RiskPredictionResponse predictRisk(Customer customer) {
         try {
             log.info("Chamando AI Service para cliente ID: {}", customer.getId());
-            
+
             CustomerDataRequest request = buildCustomerDataRequest(customer);
-            
+
             RiskPredictionResponse response = restTemplate.postForObject(
-                aiServiceUrl + "/predict-risk",
-                request,
-                RiskPredictionResponse.class
+                    aiServiceUrl + "/predict-risk",
+                    request,
+                    RiskPredictionResponse.class
             );
-            
-            log.info("AI Service retornou score: {} para cliente: {}", 
-                response.getRisk_score(), customer.getId());
-            
+
+            log.info("AI Service retornou score: {} para cliente: {}",
+                    response.getRisk_score(), customer.getId());
+
             return response;
-            
+
         } catch (ResourceAccessException e) {
             log.warn("AI Service indisponível, usando fallback para cliente: {}", customer.getId());
             return createFallbackPrediction(customer);
@@ -51,61 +51,85 @@ public class AiPredictionService {
 
     private CustomerDataRequest buildCustomerDataRequest(Customer customer) {
         int daysSinceEnrollment = (int) ChronoUnit.DAYS.between(
-            customer.getEnrollmentDate(), LocalDate.now()
+                customer.getEnrollmentDate(), LocalDate.now()
         );
-        
-       
+
+
         int overdueCount = simulateOverdueCount(customer);
         int lastPaymentDays = simulateLastPaymentDays(customer);
-        
-        log.info("Dados enviados para IA - Cliente: {}, Dias: {}, Score: {}, Atrasos: {}, Último pagamento: {}", 
-            customer.getId(), daysSinceEnrollment, customer.getRiskScore(), overdueCount, lastPaymentDays);
-        
+
+        log.info("Dados enviados para IA - Cliente: {}, Dias: {}, Score: {}, Atrasos: {}, Último pagamento: {}",
+                customer.getId(), daysSinceEnrollment, customer.getRiskScore(), overdueCount, lastPaymentDays);
+
         return new CustomerDataRequest(
-            customer.getId(),
-            daysSinceEnrollment,
-            customer.getRiskScore(),
-            overdueCount,
-            lastPaymentDays
+                customer.getId(),
+                daysSinceEnrollment,
+                customer.getRiskScore(),
+                overdueCount,
+                lastPaymentDays
         );
     }
-    
+
     private int simulateOverdueCount(Customer customer) {
-        // Usa ID do cliente como seed para gerar valores consistentes
-        
-        long seed = customer.getId() * 7; 
-        
-        if (customer.getRiskScore() > 0.8) return 4 + (int)(seed % 3); // 4-6 atrasos
-        if (customer.getRiskScore() > 0.6) return 2 + (int)(seed % 2); // 2-3 atrasos  
-        if (customer.getRiskScore() > 0.4) return (int)(seed % 2);     // 0-1 atrasos
-        return 0; // Sem atrasos
+        long seed = customer.getId() * 7;
+
+        if (customer.getRiskScore() > 0.8) {
+            return 4 + (int) (seed % 3);
+        }
+
+        if (customer.getRiskScore() > 0.6) {
+            return 2 + (int) (seed % 2);
+        }
+
+        if (customer.getRiskScore() > 0.4) {
+            return (int) (seed % 2);
+        }
+
+        return 0;
     }
-    
+
     private int simulateLastPaymentDays(Customer customer) {
-        long seed = customer.getId() * 11; 
-        
-        if (customer.getRiskScore() > 0.8) return 45 + (int)(seed % 30); // 45-75 dias
-        if (customer.getRiskScore() > 0.6) return 20 + (int)(seed % 20); // 20-40 dias
-        if (customer.getRiskScore() > 0.4) return 5 + (int)(seed % 15);  // 5-20 dias
-        return (int)(seed % 10); // 0-10 dias
+        long seed = customer.getId() * 11;
+
+        if (customer.getRiskScore() > 0.8) {
+            return 45 + (int) (seed % 30);
+        }
+
+        if (customer.getRiskScore() > 0.6) {
+            return 20 + (int) (seed % 20);
+        }
+
+        if (customer.getRiskScore() > 0.4) {
+            return 5 + (int) (seed % 15);
+        }
+
+        return (int) (seed % 10);
     }
 
     private RiskPredictionResponse createFallbackPrediction(Customer customer) {
-
         Double currentScore = customer.getRiskScore();
         String riskLevel = getRiskLevel(currentScore);
-        
+
         return new RiskPredictionResponse(
-            customer.getId(),
-            currentScore,
-            riskLevel
+                customer.getId(),
+                currentScore,
+                riskLevel
         );
     }
 
     private String getRiskLevel(Double score) {
-        if (score >= 0.8) return "CRITICAL";
-        if (score >= 0.6) return "HIGH";
-        if (score >= 0.4) return "MEDIUM";
+        if (score >= 0.8) {
+            return "CRITICAL";
+        }
+
+        if (score >= 0.6) {
+            return "HIGH";
+        }
+
+        if (score >= 0.4) {
+            return "MEDIUM";
+        }
+
         return "LOW";
     }
 }

@@ -10,6 +10,13 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - saas-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -18,7 +25,75 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - saas-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: saas-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/saas_inadimplencia
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      AI_SERVICE_URL: http://backend-python:8001
+      JWT_SECRET: ${JWT_SECRET:-mySecretKey123456789012345678901234567890}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - saas-network
+    volumes:
+      - ./backend/uploads:/app/uploads
+
+  backend-python:
+    build:
+      context: ./backend-python
+      dockerfile: Dockerfile
+    container_name: saas-backend-python
+    ports:
+      - "8001:8001"
+    environment:
+      BACKEND_URL: http://backend:8080/api
+    depends_on:
+      - backend
+    networks:
+      - saas-network
+    volumes:
+      - ./backend-python/reports:/app/reports
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:8080
+        VITE_PYTHON_API_URL: http://localhost:8001
+    container_name: saas-frontend
+    ports:
+      - "5175:80"
+    depends_on:
+      - backend
+      - backend-python
+    networks:
+      - saas-network
 
 volumes:
   postgres_data:
   redis_data:
+
+networks:
+  saas-network:
+    driver: bridge

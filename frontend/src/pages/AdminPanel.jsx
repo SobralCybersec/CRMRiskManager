@@ -150,21 +150,21 @@ const AdminPanel = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold flex items-center gap-2">
+        <h1 className="text-2xl font-bold flex items-center gap-2 text-gray-900 dark:text-gray-100">
           <Database className="w-6 h-6" />
           Painel Administrativo
         </h1>
       </div>
 
-      <div className="bg-white shadow rounded-lg">
-        <div className="border-b border-gray-200 flex justify-between items-center px-6 py-3">
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div className="border-b border-gray-200 dark:border-gray-700 flex justify-between items-center px-6 py-3">
           <nav className="flex -mb-px">
             <button
               onClick={() => setActiveTab('customers')}
               className={`px-6 py-3 border-b-2 font-medium text-sm ${
                 activeTab === 'customers'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
               Clientes ({data.customers.length})
@@ -173,8 +173,8 @@ const AdminPanel = () => {
               onClick={() => setActiveTab('users')}
               className={`px-6 py-3 border-b-2 font-medium text-sm ${
                 activeTab === 'users'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
               Usuários ({data.users.length})
@@ -182,7 +182,7 @@ const AdminPanel = () => {
           </nav>
           <button
             onClick={() => activeTab === 'customers' ? setShowCustomerForm(true) : setShowUserForm(true)}
-            className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 flex items-center gap-2"
+            className="bg-indigo-600 dark:bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-700 dark:hover:bg-indigo-600 flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Adicionar {activeTab === 'customers' ? 'Cliente' : 'Usuário'}
@@ -191,41 +191,41 @@ const AdminPanel = () => {
 
         <div className="p-6">
           {(showCustomerForm || editingCustomer) && (
-            <div className="mb-6 bg-gray-50 p-4 rounded border">
-              <h3 className="font-semibold mb-4">{editingCustomer ? 'Editar Cliente' : 'Novo Cliente'}</h3>
+            <div className="mb-6 bg-gray-50 dark:bg-gray-900 p-4 rounded border border-gray-200 dark:border-gray-700">
+              <h3 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">{editingCustomer ? 'Editar Cliente' : 'Novo Cliente'}</h3>
               <form onSubmit={editingCustomer ? handleUpdateCustomer : handleCreateCustomer} className="grid grid-cols-2 gap-4">
                 <div className="col-span-2 flex items-center gap-4">
-                  <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                  <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
                     {avatarPreview ? (
                       <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
                     ) : (
-                      <Users className="w-10 h-10 text-gray-400" />
+                      <Users className="w-10 h-10 text-gray-400 dark:text-gray-500" />
                     )}
                   </div>
                   <div>
-                    <label className="cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                    <label className="cursor-pointer bg-indigo-600 dark:bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-700 dark:hover:bg-indigo-600">
                       Escolher Foto
                       <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
                     </label>
-                    <p className="text-xs text-gray-500 mt-1">Opcional - Máx 5MB</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Opcional - Máx 5MB</p>
                   </div>
                 </div>
-                <input required placeholder="Nome" value={formData.name || ''} className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, name: e.target.value})} />
-                <input required type="email" placeholder="Email" value={formData.email || ''} className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, email: e.target.value})} />
-                <input placeholder="Telefone" value={formData.phone || ''} className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, phone: e.target.value})} />
-                <input placeholder="CPF" value={formData.cpf || ''} className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, cpf: e.target.value})} />
-                <input placeholder="Endereço" value={formData.address || ''} className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, address: e.target.value})} />
-                <input placeholder="Cidade" value={formData.city || ''} className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, city: e.target.value})} />
-                <input placeholder="Estado" value={formData.state || ''} className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, state: e.target.value})} />
-                <input type="date" placeholder="Data de Cadastro" value={formData.enrollmentDate || ''} className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, enrollmentDate: e.target.value})} />
-                <input type="number" min="0" max="100" step="0.1" placeholder="Score de Risco (%)" value={formData.riskScore || ''} className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, riskScore: parseFloat(e.target.value)})} />
-                <select className="border rounded px-3 py-2" value={formData.status || 'ACTIVE'} onChange={(e) => setFormData({...formData, status: e.target.value})}>
+                <input required placeholder="Nome" value={formData.name || ''} className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, name: e.target.value})} />
+                <input required type="email" placeholder="Email" value={formData.email || ''} className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                <input placeholder="Telefone" value={formData.phone || ''} className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, phone: e.target.value})} />
+                <input placeholder="CPF" value={formData.cpf || ''} className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, cpf: e.target.value})} />
+                <input placeholder="Endereço" value={formData.address || ''} className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, address: e.target.value})} />
+                <input placeholder="Cidade" value={formData.city || ''} className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, city: e.target.value})} />
+                <input placeholder="Estado" value={formData.state || ''} className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, state: e.target.value})} />
+                <input type="date" placeholder="Data de Cadastro" value={formData.enrollmentDate || ''} className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, enrollmentDate: e.target.value})} />
+                <input type="number" min="0" max="100" step="0.1" placeholder="Score de Risco (%)" value={formData.riskScore || ''} className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, riskScore: parseFloat(e.target.value)})} />
+                <select className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" value={formData.status || 'ACTIVE'} onChange={(e) => setFormData({...formData, status: e.target.value})}>
                   <option value="ACTIVE">Seguro</option>
                   <option value="HIGH_RISK">Alto Risco</option>
                   <option value="OVERDUE">Atrasado</option>
                 </select>
                 <div className="col-span-2 flex gap-2">
-                  <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                  <button type="submit" className="bg-green-600 dark:bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 dark:hover:bg-green-600">
                     {editingCustomer ? 'Atualizar' : 'Salvar'}
                   </button>
                   <button type="button" onClick={() => {
@@ -234,26 +234,26 @@ const AdminPanel = () => {
                     setFormData({});
                     setAvatarFile(null);
                     setAvatarPreview(null);
-                  }} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancelar</button>
+                  }} className="bg-gray-500 dark:bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-600 dark:hover:bg-gray-700">Cancelar</button>
                 </div>
               </form>
             </div>
           )}
 
           {showUserForm && (
-            <div className="mb-6 bg-gray-50 p-4 rounded border">
-              <h3 className="font-semibold mb-4">Novo Usuário</h3>
+            <div className="mb-6 bg-gray-50 dark:bg-gray-900 p-4 rounded border border-gray-200 dark:border-gray-700">
+              <h3 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">Novo Usuário</h3>
               <form onSubmit={handleCreateUser} className="grid grid-cols-2 gap-4">
-                <input required placeholder="Nome" className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, name: e.target.value})} />
-                <input required type="email" placeholder="Email" className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, email: e.target.value})} />
-                <input required type="password" placeholder="Senha" className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, password: e.target.value})} />
-                <select className="border rounded px-3 py-2" onChange={(e) => setFormData({...formData, role: e.target.value})}>
+                <input required placeholder="Nome" className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, name: e.target.value})} />
+                <input required type="email" placeholder="Email" className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                <input required type="password" placeholder="Senha" className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, password: e.target.value})} />
+                <select className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" onChange={(e) => setFormData({...formData, role: e.target.value})}>
                   <option value="USER">USER</option>
                   <option value="ADMIN">ADMIN</option>
                 </select>
                 <div className="col-span-2 flex gap-2">
-                  <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Salvar</button>
-                  <button type="button" onClick={() => setShowUserForm(false)} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancelar</button>
+                  <button type="submit" className="bg-green-600 dark:bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 dark:hover:bg-green-600">Salvar</button>
+                  <button type="button" onClick={() => setShowUserForm(false)} className="bg-gray-500 dark:bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-600 dark:hover:bg-gray-700">Cancelar</button>
                 </div>
               </form>
             </div>
@@ -261,40 +261,40 @@ const AdminPanel = () => {
 
           {activeTab === 'customers' && (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Avatar</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefone</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">CPF</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cadastro</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Risco</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Avatar</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Nome</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Email</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Telefone</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">CPF</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Cadastro</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Risco</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {data.customers.map((customer) => (
                     <tr key={customer.id}>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                        <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
                           {customer.avatarUrl ? (
                             <img src={`http://localhost:8080${customer.avatarUrl}`} alt={customer.name} className="w-full h-full object-cover" />
                           ) : (
-                            <span className="text-sm font-medium text-gray-700">{customer.name.charAt(0)}</span>
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{customer.name.charAt(0)}</span>
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{customer.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.email}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.phone}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.cpf}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{customer.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{customer.email}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{customer.phone}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{customer.cpf}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {customer.enrollmentDate ? new Date(customer.enrollmentDate).toLocaleDateString('pt-BR') : '-'}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                         {(customer.riskScore * 100).toFixed(1)}%
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -341,22 +341,22 @@ const AdminPanel = () => {
 
           {activeTab === 'users' && (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-900">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nome</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Nome</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Email</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Role</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {data.users.map((user) => (
                     <tr key={user.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{user.id}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{user.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{user.email}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 text-xs rounded-full ${
                           user.role === 'ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'

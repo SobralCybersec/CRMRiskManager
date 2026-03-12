@@ -2,17 +2,14 @@ package com.saas.service;
 
 import com.saas.entity.Customer;
 import com.saas.entity.User;
-import com.saas.repository.CustomerRepository;
-import com.saas.repository.PaymentRepository;
-import com.saas.repository.UserRepository;
-import com.saas.repository.RiskReasonRepository;
-import com.saas.repository.ContactLogRepository;
+import com.saas.repository.*;
 import com.saas.util.Base62Encoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -33,35 +30,35 @@ public class AdminService {
 
     public Map<String, Object> getAllData() {
         Map<String, Object> data = new HashMap<>();
-        
+
         List<Map<String, Object>> customers = customerRepository.findAll().stream()
-            .map(c -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("id", encoder.encode(c.getId()));
-                map.put("name", c.getName());
-                map.put("email", c.getEmail());
-                map.put("phone", c.getPhone());
-                map.put("cpf", c.getCpf());
-                map.put("riskScore", c.getRiskScore());
-                map.put("status", c.getStatus());
-                map.put("avatarUrl", c.getAvatarUrl());
-                return map;
-            }).collect(Collectors.toList());
+                .map(c -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", encoder.encode(c.getId()));
+                    map.put("name", c.getName());
+                    map.put("email", c.getEmail());
+                    map.put("phone", c.getPhone());
+                    map.put("cpf", c.getCpf());
+                    map.put("riskScore", c.getRiskScore());
+                    map.put("status", c.getStatus());
+                    map.put("avatarUrl", c.getAvatarUrl());
+                    return map;
+                }).collect(Collectors.toList());
 
         List<Map<String, Object>> users = userRepository.findAll().stream()
-            .map(u -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("id", encoder.encode(u.getId()));
-                map.put("name", u.getName());
-                map.put("email", u.getEmail());
-                map.put("role", u.getRole());
-                return map;
-            }).collect(Collectors.toList());
+                .map(u -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", encoder.encode(u.getId()));
+                    map.put("name", u.getName());
+                    map.put("email", u.getEmail());
+                    map.put("role", u.getRole());
+                    return map;
+                }).collect(Collectors.toList());
 
         data.put("customers", customers);
         data.put("users", users);
         data.put("payments", paymentRepository.count());
-        
+
         return data;
     }
 
@@ -82,14 +79,14 @@ public class AdminService {
         }
         return customerRepository.save(customer);
     }
-    
+
     @Transactional
     @CacheEvict(value = {"customerDetails", "dashboard"}, allEntries = true)
     public Customer updateCustomer(String encodedId, Customer customer) {
         Long id = encoder.decode(encodedId);
         Customer existing = customerRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-            
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+
         if (customer.getName() != null) existing.setName(customer.getName());
         if (customer.getEmail() != null) existing.setEmail(customer.getEmail());
         if (customer.getPhone() != null) existing.setPhone(customer.getPhone());
@@ -100,7 +97,7 @@ public class AdminService {
         if (customer.getRiskScore() != null) existing.setRiskScore(customer.getRiskScore());
         if (customer.getStatus() != null) existing.setStatus(customer.getStatus());
         if (customer.getAvatarUrl() != null) existing.setAvatarUrl(customer.getAvatarUrl());
-        
+
         return customerRepository.save(existing);
     }
 
@@ -108,20 +105,30 @@ public class AdminService {
     @CacheEvict(value = {"customerDetails", "dashboard"}, allEntries = true)
     public void deleteCustomer(String encodedId) {
         Long id = encoder.decode(encodedId);
-    
-        customerRepository.findById(id).ifPresent(c -> {
-            if (c.getAvatarUrl() != null) {
-                fileStorageService.deleteFile(c.getAvatarUrl());
+
+        deleteCustomerAvatar(id);
+        deleteCustomerRelatedData(id);
+        customerRepository.deleteById(id);
+    }
+
+    private void deleteCustomerAvatar(Long customerId) {
+        customerRepository.findById(customerId).ifPresent(customer -> {
+            if (customer.getAvatarUrl() != null) {
+                fileStorageService.deleteFile(customer.getAvatarUrl());
             }
         });
-      
+    }
 
-        contactLogRepository.findByCustomerIdOrderByContactedAtDesc(id).forEach(contactLogRepository::delete);
-        riskReasonRepository.findByCustomerId(id).forEach(riskReasonRepository::delete);
+    private void deleteCustomerRelatedData(Long customerId) {
+        contactLogRepository.findByCustomerIdOrderByContactedAtDesc(customerId)
+                .forEach(contactLogRepository::delete);
+
+        riskReasonRepository.findByCustomerId(customerId)
+                .forEach(riskReasonRepository::delete);
+
         paymentRepository.findAll().stream()
-            .filter(p -> p.getCustomer().getId().equals(id))
-            .forEach(paymentRepository::delete);
-        customerRepository.deleteById(id);
+                .filter(payment -> payment.getCustomer().getId().equals(customerId))
+                .forEach(paymentRepository::delete);
     }
 
     @Transactional
@@ -142,74 +149,86 @@ public class AdminService {
 
     public Map<String, Object> getStatistics() {
         Map<String, Object> stats = new HashMap<>();
-        
+
         long totalCustomers = customerRepository.count();
         long totalUsers = userRepository.count();
         long totalPayments = paymentRepository.count();
         long totalContacts = contactLogRepository.count();
-        
+
         List<Customer> customers = customerRepository.findAll();
         Map<String, Long> riskDistribution = customers.stream()
-            .collect(Collectors.groupingBy(
-                c -> getRiskLevel(c.getRiskScore()),
-                Collectors.counting()
-            ));
-        
+                .collect(Collectors.groupingBy(
+                        c -> getRiskLevel(c.getRiskScore()),
+                        Collectors.counting()
+                ));
+
         Map<String, Long> statusDistribution = customers.stream()
-            .collect(Collectors.groupingBy(
-                c -> c.getStatus().toString(),
-                Collectors.counting()
-            ));
-        
+                .collect(Collectors.groupingBy(
+                        c -> c.getStatus().toString(),
+                        Collectors.counting()
+                ));
+
         Map<String, Long> customersByMonth = customers.stream()
-            .filter(c -> c.getEnrollmentDate() != null)
-            .filter(c -> c.getEnrollmentDate().isAfter(LocalDate.now().minusMonths(6)))
-            .collect(Collectors.groupingBy(
-                c -> c.getEnrollmentDate().getYear() + "-" + 
-                     String.format("%02d", c.getEnrollmentDate().getMonthValue()),
-                Collectors.counting()
-            ));
-        
+                .filter(c -> c.getEnrollmentDate() != null)
+                .filter(c -> c.getEnrollmentDate().isAfter(LocalDate.now().minusMonths(6)))
+                .collect(Collectors.groupingBy(
+                        c -> c.getEnrollmentDate().getYear() + "-" +
+                                String.format("%02d", c.getEnrollmentDate().getMonthValue()),
+                        Collectors.counting()
+                ));
+
         Map<String, Double> avgScoreByStatus = customers.stream()
-            .collect(Collectors.groupingBy(
-                c -> c.getStatus().toString(),
-                Collectors.averagingDouble(Customer::getRiskScore)
-            ));
-        
+                .collect(Collectors.groupingBy(
+                        c -> c.getStatus().toString(),
+                        Collectors.averagingDouble(Customer::getRiskScore)
+                ));
+
         List<Map<String, Object>> topRiskCustomers = customers.stream()
-            .sorted((c1, c2) -> Double.compare(c2.getRiskScore(), c1.getRiskScore()))
-            .limit(5)
-            .map(c -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("id", encoder.encode(c.getId()));
-                map.put("name", c.getName());
-                map.put("riskScore", c.getRiskScore());
-                map.put("status", c.getStatus().toString());
-                return map;
-            })
-            .collect(Collectors.toList());
-        
+                .sorted((c1, c2) -> Double.compare(c2.getRiskScore(), c1.getRiskScore()))
+                .limit(5)
+                .map(c -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", encoder.encode(c.getId()));
+                    map.put("name", c.getName());
+                    map.put("riskScore", c.getRiskScore());
+                    map.put("status", c.getStatus().toString());
+                    return map;
+                })
+                .collect(Collectors.toList());
+
         stats.put("totals", Map.of(
-            "customers", totalCustomers,
-            "users", totalUsers,
-            "payments", totalPayments,
-            "contacts", totalContacts
+                "customers", totalCustomers,
+                "users", totalUsers,
+                "payments", totalPayments,
+                "contacts", totalContacts
         ));
-        
+
         stats.put("riskDistribution", riskDistribution);
         stats.put("statusDistribution", statusDistribution);
         stats.put("customersByMonth", customersByMonth);
         stats.put("avgScoreByStatus", avgScoreByStatus);
         stats.put("topRiskCustomers", topRiskCustomers);
-        
+
         return stats;
     }
-    
+
     private String getRiskLevel(Double score) {
-        if (score == null) return "UNKNOWN";
-        if (score >= 0.8) return "CRITICAL";
-        if (score >= 0.6) return "HIGH";
-        if (score >= 0.4) return "MEDIUM";
+        if (score == null) {
+            return "UNKNOWN";
+        }
+
+        if (score >= 0.8) {
+            return "CRITICAL";
+        }
+
+        if (score >= 0.6) {
+            return "HIGH";
+        }
+
+        if (score >= 0.4) {
+            return "MEDIUM";
+        }
+
         return "LOW";
     }
 }

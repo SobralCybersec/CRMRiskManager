@@ -10,19 +10,21 @@ import uvicorn
 import xlsxwriter
 import os
 
+import os
+
 app = FastAPI(title="CRM Risk Manager - Analytics & Reports Service")
 
 # Configurar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://localhost:5175"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# URL do backend Spring Boot
-BACKEND_URL = "http://localhost:8080/api"
+# URL do backend Spring Boot - usar variável de ambiente ou padrão
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8080/api")
 
 def translate_status(status):
     """Traduz status do inglês para português"""
@@ -42,7 +44,11 @@ class CustomerData(BaseModel):
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "service": "Analytics & Reports"}
+    return {
+        "status": "healthy",
+        "service": "Analytics & Reports",
+        "backend_url": BACKEND_URL
+    }
 
 @app.get("/analytics/dashboard-data")
 async def get_dashboard_analytics():

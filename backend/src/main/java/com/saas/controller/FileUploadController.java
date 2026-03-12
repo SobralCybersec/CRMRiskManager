@@ -3,9 +3,12 @@ package com.saas.controller;
 import com.saas.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.HashMap;
+
 import java.util.Map;
 
 @RestController
@@ -16,15 +19,7 @@ public class FileUploadController {
 
     @PostMapping("/avatar")
     public ResponseEntity<Map<String, String>> uploadAvatar(@RequestParam("file") MultipartFile file) {
-        try {
-            String fileUrl = fileStorageService.storeFile(file);
-            Map<String, String> response = new HashMap<>();
-            response.put("url", fileUrl);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(error);
-        }
+        String fileUrl = fileStorageService.storeFile(file);
+        return ResponseEntity.ok(Map.of("url", fileUrl));
     }
 }

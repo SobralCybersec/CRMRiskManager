@@ -94,50 +94,50 @@ export default function Statistics() {
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <BarChart3 className="h-8 w-8 text-blue-600" />
-          <h1 className="text-3xl font-bold text-gray-900">Estatísticas do Sistema</h1>
+          <BarChart3 className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Estatísticas do Sistema</h1>
         </div>
       </div>
 
       {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Clientes</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.totals.customers}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Clientes</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{stats.totals.customers}</p>
             </div>
-            <Users className="h-8 w-8 text-blue-600" />
+            <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Usuários</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.totals.users}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Usuários</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{stats.totals.users}</p>
             </div>
-            <Users className="h-8 w-8 text-green-600" />
+            <Users className="h-8 w-8 text-green-600 dark:text-green-400" />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Pagamentos</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.totals.payments}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Pagamentos</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{stats.totals.payments}</p>
             </div>
-            <TrendingUp className="h-8 w-8 text-purple-600" />
+            <TrendingUp className="h-8 w-8 text-purple-600 dark:text-purple-400" />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Contatos</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.totals.contacts}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Contatos</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{stats.totals.contacts}</p>
             </div>
-            <AlertTriangle className="h-8 w-8 text-orange-600" />
+            <AlertTriangle className="h-8 w-8 text-orange-600 dark:text-orange-400" />
           </div>
         </div>
       </div>
@@ -145,16 +145,16 @@ export default function Statistics() {
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Distribuição de Risco */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Distribuição por Nível de Risco</h3>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Distribuição por Nível de Risco</h3>
           <div className="h-64">
             <Doughnut data={riskDistributionData} options={chartOptions} />
           </div>
         </div>
 
         {/* Status dos Clientes */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Status dos Clientes</h3>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Status dos Clientes</h3>
           <div className="h-64">
             <Bar data={statusDistributionData} options={chartOptions} />
           </div>
@@ -162,33 +162,33 @@ export default function Statistics() {
       </div>
 
       {/* Gráfico de Linha - Novos Clientes */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Novos Clientes (Últimos 6 Meses)</h3>
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Novos Clientes (Últimos 6 Meses)</h3>
         <div className="h-64">
           <Line data={monthlyData} options={chartOptions} />
         </div>
       </div>
 
       {/* Top Clientes de Risco */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Top 5 Clientes com Maior Risco</h3>
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Top 5 Clientes com Maior Risco</h3>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-900">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score de Risco</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nível</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nome</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Score de Risco</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nível</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {stats.topRiskCustomers.map((customer) => (
                 <tr key={customer.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                     {customer.name}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {(customer.riskScore * 100).toFixed(1)}%
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -216,13 +216,13 @@ export default function Statistics() {
       </div>
 
       {/* Score Médio por Status */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Score Médio por Status</h3>
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Score Médio por Status</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Object.entries(stats.avgScoreByStatus).map(([status, avgScore]) => (
-            <div key={status} className="text-center p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm font-medium text-gray-600">{status}</p>
-              <p className="text-2xl font-bold text-gray-900">{(avgScore * 100).toFixed(1)}%</p>
+            <div key={status} className="text-center p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{status}</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{(avgScore * 100).toFixed(1)}%</p>
             </div>
           ))}
         </div>

@@ -11,7 +11,7 @@ public class Base62Encoder {
         if (id == null || id == 0) return "0";
         StringBuilder sb = new StringBuilder();
         while (id > 0) {
-            sb.append(BASE62.charAt((int)(id % BASE)));
+            sb.append(BASE62.charAt((int) (id % BASE)));
             id /= BASE;
         }
         return sb.reverse().toString();
