@@ -1,7 +1,7 @@
 <div align="center">
 
 <h1 align="center">
-  <img src="https://i.imgur.com/2mPtxE5.png" width="30" />
+  <img src="https://i.imgur.com/320rEXW.png" width="30" />
   CRM Risk Manager
 </h1>
 
@@ -18,7 +18,19 @@
   Demonstração
 </h1>
 
-<img src="https://i.imgur.com/qIy6qsK.png" width="800">
+<img src="https://i.imgur.com/lb6yJ9m.png" width="800">
+
+---
+
+<img src="https://i.imgur.com/I3U5YBB.png" width="800">
+
+---
+
+<img src="https://i.imgur.com/0GnF0ZV.png" width="800">
+
+---
+
+<img src="https://i.imgur.com/nhHMptE.png" width="800">
 
 ---
 
@@ -87,7 +99,7 @@ Sistema CRM com análise de risco automática, dashboard analytics e geração d
 ---
 
 <h1 align="center">
-  <img src="https://cdn-icons-png.flaticon.com/512/1157/1157109.png" width="30"/> Architecture
+  <img src="https://cdn-icons-png.flaticon.com/512/1157/1157109.png" width="30"/> Architecture | System Design
 </h1>
 
 <div align="center">
